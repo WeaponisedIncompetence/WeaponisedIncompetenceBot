@@ -162,7 +162,7 @@ async def help(ctx):
         url="",
         description="Help"
         )
-    embed.add_field(name="Click below for a list of bot commands.", value="")
+    embed.add_field(name="Click below for a list of bot commands.", value="[Click Here](https://github.com/WeaponisedIncompetence/WeaponisedIncompetenceBot/blob/main/README.md)")
     
     await ctx.respond(
         embed=embed, ephemeral=True
