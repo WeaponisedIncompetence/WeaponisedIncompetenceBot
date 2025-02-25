@@ -24,6 +24,7 @@ async def on_ready():
     print(f"{bot.user} is ready and online!")
 
 
+
 ##Running a sim explanation
 
 
@@ -155,73 +156,68 @@ async def prompthowtosim(ctx):
         "Need to know how to sim? Type /helpsim for detailed instructions."
     )
 
-
 @bot.slash_command(name="commands", guild_ids=[1276103481287249990])
 async def help(ctx):
     sname = ctx.guild.name
-    embed = discord.Embed(title=sname, url="", description="Help")
-    embed.add_field(
-        name="Click below for a list of bot commands.",
-        value="[Click Here](https://github.com/WeaponisedIncompetence/WeaponisedIncompetenceBot/blob/main/README.md)",
+    embed = discord.Embed(title=sname,
+        url="",
+        description="Help"
+        )
+    embed.add_field(name="Click below for a list of bot commands.", value="[Click Here](https://github.com/WeaponisedIncompetence/WeaponisedIncompetenceBot/blob/main/README.md)")
+    
+    await ctx.respond(
+        embed=embed, ephemeral=True
     )
-
-    await ctx.respond(embed=embed, ephemeral=True)
-
 
 ## Approving trial automation
 
+@bot.slash_command(name="trialapproved",
+                   guild_ids=[1276103481287249990])
 
-@bot.slash_command(name="trialapproved", guild_ids=[1276103481287249990])
 async def trialApproved(ctx, name: discord.Member):
-    officerRole = discord.utils.get(ctx.guild.roles, name="Officer")
-    leadershipRole = discord.utils.get(ctx.guild.roles, name="Leadership")
-    if (officerRole in ctx.author.roles) or (leadershipRole in ctx.author.roles):
-        if discord.utils.get(name.roles, name="Trial Request"):
-            roleToAdd = discord.utils.get(ctx.guild.roles, name="Trial")
-            roleToRemove = discord.utils.get(ctx.guild.roles, name="Trial Request")
-            await name.add_roles(roleToAdd)
-            await name.remove_roles(roleToRemove)
-            channel = discord.utils.get(ctx.guild.channels, name="trial-request")
-            guildChat = discord.utils.get(ctx.guild.channels, name="guild-chat")
-            raidTalk = discord.utils.get(ctx.guild.channels, name="raid-talk")
-            raidAnnouncements = discord.utils.get(
-                ctx.guild.channels, name="raid-announcements"
-            )
-            await channel.send(
-                f"Welcome to the guild as a trial, {name.mention}. Please post in the {guildChat} or {raidTalk} channels with your character name, server and faction to get an invite once you're online. Information about our raid can be found in the {raidAnnouncements} channel, or elsewhere in this section."
-            )
-
-    await ctx.send(f"asd")
-
-
+    channel = discord.utils.get(ctx.guild.channels, name="trial-request")
+    if ctx.channel == channel:
+        officerRole = discord.utils.get(ctx.guild.roles, name ="Officer")
+        leadershipRole = discord.utils.get(ctx.guild.roles, name="Leadership")
+        if (officerRole in ctx.author.roles) or (leadershipRole in ctx.author.roles):
+            if discord.utils.get(name.roles, name="Trial Request"):
+                roleToAdd = discord.utils.get(ctx.guild.roles, name="Trial")
+                roleToRemove= discord.utils.get(ctx.guild.roles, name="Trial Request")
+                await name.add_roles(roleToAdd)
+                await name.remove_roles(roleToRemove)
+                guildChat = discord.utils.get(ctx.guild.channels, name="guild-chat")
+                raidTalk = discord.utils.get(ctx.guild.channels, name="raid-talk")
+                raidAnnouncements = discord.utils.get(ctx.guild.channels, name="raid-announcements")
+                await channel.send(f"Welcome to the guild as a trial, {name.mention}. Please post in the {guildChat} or {raidTalk} channels with your character name, server and faction to get an invite once you're online. Information about our raid can be found in the {raidAnnouncements} channel, or elsewhere in this section.")
+            else:
+                await ctx.respond("User does not have the trial request rank. Please try again, ensuring you selected the right user.", ephemeral=True)    
+        else:
+            await ctx.respond("You do not have permission to do that.",ephemeral=True)        
+    else:
+        await ctx.respond("This command can only be run in the trial-request channel.",ephemeral=True)      
+    
+            
+            
+    
 ##Trial request message
 
-
 @bot.event
-async def on_member_update(before, after):
+async def on_member_update(before,after):
     if len(before.roles) < len(after.roles):
         newRole = next(role for role in after.roles if role not in before.roles)
         if newRole.name == "Trial Request":
             channel = discord.utils.get(before.guild.channels, name="trial-request")
-            currentMember = discord.utils.get(after.guild.members, id=after.id)
-            await channel.send(
-                f"Hi there {currentMember.mention}, I see you have requested the "
-                "Trial Request"
-                " role. Please submit a trial request by clicking at the top of this channel and an officer will be with you in due course. This notification will be automatically deleted after 48 hours. Alternatively, if this was a mistake, please return to the {id:customize} channel. ",
-                delete_after=172800,
-            ),
+            currentMember = discord.utils.get(after.guild.members, id = after.id)
+            await channel.send (f"Hi there {currentMember.mention}, I see you have requested the ""Trial Request"" role. Please submit a trial request by clicking at the top of this channel and an officer will be with you in due course. This notification will be automatically deleted after 48 hours. Alternatively, if this was a mistake, please return to the {id:customize} channel. ",delete_after=172800),
     if len(after.roles) < len(before.roles):
-        lostRole = next(role for role in before.roles if role not in after.roles)
+        lostRole = next (role for role in before.roles if role not in after.roles)
         if lostRole.name == "Trial Request":
             channel = discord.utils.get(before.guild.channels, name="trial-request")
-            currentMember = discord.utils.get(after.guild.members, id=after.id)
+            currentMember = discord.utils.get(after.guild.members, id = after.id)
             async for message in channel.history(limit=None):
-                if (
-                    f"Hi there {currentMember.mention}, I see you have requested the "
-                    "Trial Request"
-                    ""
-                ) in message.content:
+                if (f"Hi there {currentMember.mention}, I see you have requested the ""Trial Request""") in message.content:
                     await message.delete()
-
+   
+                    
 
 bot.run(bottoken)

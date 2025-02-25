@@ -11,3 +11,5 @@ List of Commands:
 
 /help - Provides a link to this list.
 
+/trialapproved - requires [Username}. Removes the trial requested rank and grants the trial rank for a given user. must be officer or above, must be used in the #trial-request channel.
+
