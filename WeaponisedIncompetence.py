@@ -14,9 +14,12 @@ intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 
 bot = commands.Bot(intents=intents)
-guild = bot.get_guild(1276103481287249990)
+guildIDForServer = 1343979952210575380
+guild = bot.get_guild(guildIDForServer)
 mydb = myclient["Weaponised_Incompetence"]
 bottoken = os.environ["DISCORD_TOKEN"]
+
+
 
 
 @bot.event
@@ -31,7 +34,7 @@ async def on_ready():
 @bot.slash_command(
     name="howtosim",
     description="Help me run and import a sim into WoWAudit",
-    guild_ids=[1276103481287249990],
+    guild_ids=[1343979952210575380],
 )
 async def howtosim(ctx):
     await ctx.respond(
@@ -91,7 +94,7 @@ async def howtosim(ctx):
 @bot.slash_command(
     name="clearchat",
     description="Purges chat. Must have the Administrator role to action",
-    guild_ids=[1276103481287249990],
+    guild_ids=[guildIDForServer],
 )
 async def clearchat(ctx, number: int):
     if ctx.author.guild_permissions.administrator:
@@ -116,7 +119,7 @@ async def clearchat(ctx, number: int):
 @bot.slash_command(
     name="professioncheck",
     description="Returns a list of members with the given profession role",
-    guild_ids=[1276103481287249990],
+    guild_ids=[guildIDForServer],
 )
 async def professioncheck(
     ctx: discord.ApplicationContext,
@@ -150,13 +153,13 @@ async def professioncheck(
 ## Sim reminder
 
 
-@bot.slash_command(name="prompthowtosim", guild_ids=[1276103481287249990])
+@bot.slash_command(name="prompthowtosim", guild_ids=[guildIDForServer])
 async def prompthowtosim(ctx):
     await ctx.channel.send(
         "Need to know how to sim? Type /helpsim for detailed instructions."
     )
 
-@bot.slash_command(name="commands", guild_ids=[1276103481287249990])
+@bot.slash_command(name="commands", guild_ids=[guildIDForServer])
 async def help(ctx):
     sname = ctx.guild.name
     embed = discord.Embed(title=sname,
@@ -171,8 +174,7 @@ async def help(ctx):
 
 ## Approving trial automation
 
-@bot.slash_command(name="trialapproved",
-                   guild_ids=[1276103481287249990])
+@bot.slash_command(name="trialapproved", guild_ids=[guildIDForServer])
 
 async def trialApproved(ctx, name: discord.Member):
     channel = discord.utils.get(ctx.guild.channels, name="trial-request")
