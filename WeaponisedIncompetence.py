@@ -156,7 +156,7 @@ async def professioncheck(
 @bot.slash_command(name="prompthowtosim", guild_ids=[guildIDForServer])
 async def prompthowtosim(ctx):
     await ctx.channel.send(
-        "Need to know how to sim? Type /helpsim for detailed instructions."
+        "Need to know how to sim? Type /howtosim for detailed instructions."
     )
 
 @bot.slash_command(name="commands", guild_ids=[guildIDForServer])
@@ -197,10 +197,7 @@ async def trialApproved(ctx, name: discord.Member):
             await ctx.respond("You do not have permission to do that.",ephemeral=True)        
     else:
         await ctx.respond("This command can only be run in the trial-request channel.",ephemeral=True)      
-    
-            
-            
-    
+   
 ##Trial request message
 
 @bot.event
@@ -219,7 +216,8 @@ async def on_member_update(before,after):
             async for message in channel.history(limit=None):
                 if (f"Hi there {currentMember.mention}, I see you have requested the ""Trial Request""") in message.content:
                     await message.delete()
-   
-                    
+
+
+
 
 bot.run(bottoken)
