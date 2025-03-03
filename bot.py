@@ -24,7 +24,7 @@ bottoken = os.environ["DISCORD_TOKEN"]
 
 @bot.event
 async def on_ready():
-    print(f"Successfully finished startup.")
+    print("successfully finished startup")
 
 
 
