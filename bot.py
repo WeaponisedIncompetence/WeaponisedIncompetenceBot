@@ -93,7 +93,7 @@ async def howtosim(ctx):
 
 @bot.slash_command(
     name="clearchat",
-    description="Purges chat. Must have the Administrator role to action",5
+    description="Purges chat. Must have the Administrator role to action",
     guild_ids=[guildIDForServer],
 )
 async def clearchat(ctx, number: int):
