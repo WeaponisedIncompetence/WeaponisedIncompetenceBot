@@ -13,7 +13,7 @@ intents.members = True
 intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 
-bot = commands.Bot(intents=intents)
+bot = commands.Bot(command_prefix="/",intents=intents)
 guildIDForServer = 1238412740448620676
 guild = bot.get_guild(guildIDForServer)
 mydb = myclient["Weaponised_Incompetence"]
