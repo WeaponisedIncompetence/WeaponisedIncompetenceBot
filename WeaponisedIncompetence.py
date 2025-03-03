@@ -14,7 +14,7 @@ intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 
 bot = commands.Bot(intents=intents)
-guildIDForServer = 1343979952210575380
+guildIDForServer = 1238412740448620676
 guild = bot.get_guild(guildIDForServer)
 mydb = myclient["Weaponised_Incompetence"]
 bottoken = os.environ["DISCORD_TOKEN"]
@@ -24,7 +24,7 @@ bottoken = os.environ["DISCORD_TOKEN"]
 
 @bot.event
 async def on_ready():
-    print(f"{bot.user} is ready and online!")
+    print(f"Successfully finished startup.")
 
 
 
@@ -34,13 +34,13 @@ async def on_ready():
 @bot.slash_command(
     name="howtosim",
     description="Help me run and import a sim into WoWAudit",
-    guild_ids=[1343979952210575380],
+    guild_ids=[guildIDForServer],
 )
 async def howtosim(ctx):
     await ctx.respond(
         "Hi there, "
         + ctx.author.display_name
-        + "! I understand that somebody is unsure how to sim properly. Please find below an explanation on how to get this working. If anyone else needs assistance, please type /helpsim."
+        + "! I understand that somebody is unsure how to sim properly. Please find below an explanation on how to get this working. If anyone else needs assistance, please type /howtosim."
     )
     embed1 = discord.Embed(
         title="How to sim & import to WowAudit",
@@ -74,7 +74,7 @@ async def howtosim(ctx):
     embed5 = discord.Embed()
     embed5.add_field(
         name="Step 5",
-        value="Once you have done this, scroll down until you find the Simulation Options section, which looks like the image below. Make sure you copy the settings we looked at in step 1, or your sim will not be accepted. Once this has been done, and the correct Source and raid difficulty have been set, run the sim.",
+        value="Once you have done this, scroll down until you find the Simulation Options section, which looks like the image below. Make sure you copy the settings we looked at in step 1 (THIS MAY NOT REFLECT THE SCREENSHOT IMMEDIATELY), or your sim will not be accepted. Once this has been done, and the correct Source and raid difficulty have been set, run the sim.",
     )
     embed5.set_image(url="https://i.imgur.com/kNpgklH.png")
     embed6 = discord.Embed()
@@ -93,7 +93,7 @@ async def howtosim(ctx):
 
 @bot.slash_command(
     name="clearchat",
-    description="Purges chat. Must have the Administrator role to action",
+    description="Purges chat. Must have the Administrator role to action",5
     guild_ids=[guildIDForServer],
 )
 async def clearchat(ctx, number: int):
@@ -105,6 +105,7 @@ async def clearchat(ctx, number: int):
                 ephemeral=True,
             )
         elif number < limit:
+            await ctx.response.defer(ephemeral=True)
             await ctx.channel.purge(limit=number)
             await ctx.respond(
                 "Purged " + str(number) + " chat messages.", ephemeral=True
@@ -155,7 +156,7 @@ async def professioncheck(
 
 @bot.slash_command(name="prompthowtosim", guild_ids=[guildIDForServer])
 async def prompthowtosim(ctx):
-    await ctx.channel.send(
+    ctx.channel.send(
         "Need to know how to sim? Type /howtosim for detailed instructions."
     )
 
