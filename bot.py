@@ -14,8 +14,8 @@ intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 
 bot = commands.Bot(command_prefix="/",intents=intents)
-#guildIDForServer = 1238412740448620676 ##LIVE
-guildIDForServer = 1343979952210575380 ##TEST
+guildIDForServer = 1238412740448620676 ##LIVE
+#guildIDForServer = 1343979952210575380 ##TEST
 
 
 guild = bot.get_guild(guildIDForServer)
