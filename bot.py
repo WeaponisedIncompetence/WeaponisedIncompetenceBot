@@ -14,7 +14,10 @@ intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 
 bot = commands.Bot(command_prefix="/",intents=intents)
-guildIDForServer = 1238412740448620676
+guildIDForServer = 1238412740448620676 ##LIVE
+#guildIDForServer = 1343979952210575380 ##TEST
+
+
 guild = bot.get_guild(guildIDForServer)
 mydb = myclient["Weaponised_Incompetence"]
 bottoken = os.environ["DISCORD_TOKEN"]
@@ -219,6 +222,32 @@ async def on_member_update(before,after):
                     await message.delete()
 
 
+@bot.slash_command (name='resizechannel', guild_ids=[guildIDForServer])
+
+
+#provides the userbase with a slash command to resize a voice channel FROM WITHIN THE CHANNEL. Works for any channel using the "KEYS" designation for regular users, or any channel for officers.
+async def resizechannel (ctx, newlimit: int):
+    try:
+        channel = ctx.author.voice.channel
+    except:
+        await ctx.respond("You need to be in a voice channel to run this command.")
+    else:
+        officerRole = discord.utils.get(ctx.guild.roles, name ="Officer")
+        leadershipRole = discord.utils.get(ctx.guild.roles, name="Leadership")
+        if (officerRole in ctx.author.roles) or (leadershipRole in ctx.author.roles):
+                await channel.edit(user_limit= newlimit)
+        else:
+            if ("Keys" in channel.name):
+                channel.edit(user_limit= newlimit)
+                await ctx.respond(f'Done! the "{channel.name}" channel has been set to allow a maximum of {newlimit} users.')
+            else: await ctx.respond("You do not have permission to change this channel. Please use one of the Keys channels.") 
+            
+            
+@bot.event
+async def on_voice_state_update(member, before, after):
+    if before.channel is not None and after.channel is None and before.channel.name != "Main Raid":
+        if len(before.channel.members)== 0:
+            await before.channel.edit(user_limit=0)
 
 
 bot.run(bottoken)
