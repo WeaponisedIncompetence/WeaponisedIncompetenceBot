@@ -14,8 +14,8 @@ intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 
 bot = commands.Bot(command_prefix="/",intents=intents)
-guildIDForServer = 1238412740448620676 ##LIVE
-#guildIDForServer = 1343979952210575380 ##TEST
+#guildIDForServer = 1238412740448620676 ##LIVE
+guildIDForServer = 1343979952210575380 ##TEST
 
 
 guild = bot.get_guild(guildIDForServer)
@@ -238,7 +238,7 @@ async def resizechannel (ctx, newlimit: int):
                 await channel.edit(user_limit= newlimit)
         else:
             if ("Keys" in channel.name):
-                channel.edit(user_limit= newlimit)
+                await channel.edit(user_limit= newlimit)
                 await ctx.respond(f'Done! the "{channel.name}" channel has been set to allow a maximum of {newlimit} users.')
             else: await ctx.respond("You do not have permission to change this channel. Please use one of the Keys channels.") 
             
