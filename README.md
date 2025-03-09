@@ -13,3 +13,4 @@ List of Commands:
 
 /trialapproved - requires [Username]. Removes the trial requested rank and grants the trial rank for a given user. must be officer or above, must be used in the #trial-request channel.
 
+/resizechannel - requires an integer. Must be in a voice channel to use.

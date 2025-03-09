@@ -14,8 +14,8 @@ intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 
 bot = commands.Bot(command_prefix="/",intents=intents)
-guildIDForServer = 1238412740448620676 ##LIVE
-#guildIDForServer = 1343979952210575380 ##TEST
+#guildIDForServer = 1238412740448620676 ##LIVE
+guildIDForServer = 1343979952210575380 ##TEST
 
 
 guild = bot.get_guild(guildIDForServer)
@@ -245,7 +245,7 @@ async def resizechannel (ctx, newlimit: int):
             
 @bot.event
 async def on_voice_state_update(member, before, after):
-    if before.channel is not None and after.channel is None and before.channel.name != "Main Raid":
+    if before.channel is not None and before.channel.name != "Main Raid":
         if len(before.channel.members)== 0:
             await before.channel.edit(user_limit=0)
 
