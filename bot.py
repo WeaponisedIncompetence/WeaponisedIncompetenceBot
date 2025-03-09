@@ -230,7 +230,7 @@ async def resizechannel (ctx, newlimit: int):
     try:
         channel = ctx.author.voice.channel
     except:
-        await ctx.respond("You need to be in a voice channel to run this command.")
+        await ctx.respond("You need to be in a voice channel to run this command.", ephemeral=True)
     else:
         officerRole = discord.utils.get(ctx.guild.roles, name ="Officer")
         leadershipRole = discord.utils.get(ctx.guild.roles, name="Leadership")
@@ -239,8 +239,8 @@ async def resizechannel (ctx, newlimit: int):
         else:
             if ("Keys" in channel.name):
                 await channel.edit(user_limit= newlimit)
-                await ctx.respond(f'Done! the "{channel.name}" channel has been set to allow a maximum of {newlimit} users.')
-            else: await ctx.respond("You do not have permission to change this channel. Please use one of the Keys channels.") 
+                await ctx.respond(f'Done! the "{channel.name}" channel has been set to allow a maximum of {newlimit} users.', ephemeral=True)
+            else: await ctx.respond("You do not have permission to change this channel. Please use one of the Keys channels.", ephemeral=True) 
             
             
 @bot.event
