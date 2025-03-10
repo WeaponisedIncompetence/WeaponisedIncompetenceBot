@@ -189,12 +189,14 @@ async def trialApproved(ctx, name: discord.Member):
             if discord.utils.get(name.roles, name="Trial Request"):
                 roleToAdd = discord.utils.get(ctx.guild.roles, name="Trial")
                 roleToRemove= discord.utils.get(ctx.guild.roles, name="Trial Request")
+                await ctx.response.defer(ephemeral=True)
                 await name.add_roles(roleToAdd)
                 await name.remove_roles(roleToRemove)
                 guildChat = discord.utils.get(ctx.guild.channels, name="guild-chat")
                 raidTalk = discord.utils.get(ctx.guild.channels, name="raid-talk")
                 raidAnnouncements = discord.utils.get(ctx.guild.channels, name="raid-announcements")
                 await channel.send(f"Welcome to the guild as a trial, {name.mention}. Please post in the {guildChat} or {raidTalk} channels with your character name, server and faction to get an invite once you're online. Information about our raid can be found in the {raidAnnouncements} channel, or elsewhere in this section.")
+                await ctx.respond("Trial Approved.")
             else:
                 await ctx.respond("User does not have the trial request rank. Please try again, ensuring you selected the right user.", ephemeral=True)    
         else:
