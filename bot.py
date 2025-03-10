@@ -211,7 +211,7 @@ async def on_member_update(before,after):
         if newRole.name == "Trial Request":
             channel = discord.utils.get(before.guild.channels, name="trial-request")
             currentMember = discord.utils.get(after.guild.members, id = after.id)
-            await channel.send (f"Hi there {currentMember.mention}, I see you have requested the ""Trial Request"" role. Please submit a trial request by clicking at the top of this channel and an officer will be with you in due course. This notification will be automatically deleted after 48 hours. Alternatively, if this was a mistake, please return to the {id:customize} channel. ",delete_after=172800),
+            await channel.send (f"Hi there {currentMember.mention}, I see you have requested the ""Trial Request"" role. Please submit a trial request by clicking at the top of this channel and an officer will be with you in due course. This notification will be automatically deleted after 48 hours. Alternatively, if this was a mistake, please return to the <id:customize> channel. ",delete_after=172800),
     if len(after.roles) < len(before.roles):
         lostRole = next (role for role in before.roles if role not in after.roles)
         if lostRole.name == "Trial Request":
