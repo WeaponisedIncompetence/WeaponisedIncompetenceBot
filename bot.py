@@ -14,11 +14,7 @@ intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 
 bot = commands.Bot(command_prefix="/", intents=intents)
-guildIDForServer = 1238412740448620676 ##LIVE
-#guildIDForServer = 1343979952210575380  ##TEST
 
-
-guild = bot.get_guild(guildIDForServer)
 mydb = myclient["Weaponised_Incompetence"]
 bottoken = os.environ["DISCORD_TOKEN"]
 
@@ -34,7 +30,6 @@ async def on_ready():
 @bot.slash_command(
     name="howtosim",
     description="Help me run and import a sim into WoWAudit",
-    guild_ids=[guildIDForServer],
 )
 async def howtosim(ctx):
     await ctx.respond(
@@ -94,7 +89,6 @@ async def howtosim(ctx):
 @bot.slash_command(
     name="clearchat",
     description="Purges chat. Must have the Administrator role to action",
-    guild_ids=[guildIDForServer],
 )
 async def clearchat(ctx, number: int):
     if ctx.author.guild_permissions.administrator:
@@ -120,7 +114,6 @@ async def clearchat(ctx, number: int):
 @bot.slash_command(
     name="professioncheck",
     description="Returns a list of members with the given profession role",
-    guild_ids=[guildIDForServer],
 )
 async def professioncheck(
     ctx: discord.ApplicationContext,
@@ -154,14 +147,14 @@ async def professioncheck(
 ## Sim reminder
 
 
-@bot.slash_command(name="prompthowtosim", guild_ids=[guildIDForServer])
+@bot.slash_command(name="prompthowtosim")
 async def prompthowtosim(ctx):
     ctx.channel.send(
         "Need to know how to sim? Type /howtosim for detailed instructions."
     )
 
 
-@bot.slash_command(name="commands", guild_ids=[guildIDForServer])
+@bot.slash_command(name="commands")
 async def help(ctx):
     sname = ctx.guild.name
     embed = discord.Embed(title=sname, url="", description="Help")
@@ -176,7 +169,7 @@ async def help(ctx):
 ## Approving trial automation
 
 
-@bot.slash_command(name="trialapproved", guild_ids=[guildIDForServer])
+@bot.slash_command(name="trialapproved")
 async def trialApproved(ctx, name: discord.Member):
     channel = discord.utils.get(ctx.guild.channels, name="trial-request")
     if ctx.channel == channel:
@@ -244,7 +237,7 @@ async def on_member_update(before, after):
                         await message.delete()
 
 
-@bot.slash_command(name="resizechannel", guild_ids=[guildIDForServer])
+@bot.slash_command(name="resizechannel")
 
 
 # provides the userbase with a slash command to resize a voice channel FROM WITHIN THE CHANNEL. Works for any channel using the "KEYS" designation for regular users, or any channel for officers.
