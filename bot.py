@@ -13,9 +13,9 @@ intents.members = True
 intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 
-bot = commands.Bot(command_prefix="/",intents=intents)
-guildIDForServer = 1238412740448620676 ##LIVE
-#guildIDForServer = 1343979952210575380 ##TEST
+bot = commands.Bot(command_prefix="/", intents=intents)
+# guildIDForServer = 1238412740448620676 ##LIVE
+guildIDForServer = 1343979952210575380  ##TEST
 
 
 guild = bot.get_guild(guildIDForServer)
@@ -23,12 +23,9 @@ mydb = myclient["Weaponised_Incompetence"]
 bottoken = os.environ["DISCORD_TOKEN"]
 
 
-
-
 @bot.event
 async def on_ready():
     print("successfully finished startup")
-
 
 
 ##Running a sim explanation
@@ -163,93 +160,128 @@ async def prompthowtosim(ctx):
         "Need to know how to sim? Type /howtosim for detailed instructions."
     )
 
+
 @bot.slash_command(name="commands", guild_ids=[guildIDForServer])
 async def help(ctx):
     sname = ctx.guild.name
-    embed = discord.Embed(title=sname,
-        url="",
-        description="Help"
-        )
-    embed.add_field(name="Click below for a list of bot commands.", value="[Click Here](https://github.com/WeaponisedIncompetence/WeaponisedIncompetenceBot/blob/main/README.md)")
-    
-    await ctx.respond(
-        embed=embed, ephemeral=True
+    embed = discord.Embed(title=sname, url="", description="Help")
+    embed.add_field(
+        name="Click below for a list of bot commands.",
+        value="[Click Here](https://github.com/WeaponisedIncompetence/WeaponisedIncompetenceBot/blob/main/README.md)",
     )
+
+    await ctx.respond(embed=embed, ephemeral=True)
+
 
 ## Approving trial automation
 
-@bot.slash_command(name="trialapproved", guild_ids=[guildIDForServer])
 
+@bot.slash_command(name="trialapproved", guild_ids=[guildIDForServer])
 async def trialApproved(ctx, name: discord.Member):
     channel = discord.utils.get(ctx.guild.channels, name="trial-request")
     if ctx.channel == channel:
-        officerRole = discord.utils.get(ctx.guild.roles, name ="Officer")
+        officerRole = discord.utils.get(ctx.guild.roles, name="Officer")
         leadershipRole = discord.utils.get(ctx.guild.roles, name="Leadership")
         if (officerRole in ctx.author.roles) or (leadershipRole in ctx.author.roles):
             if discord.utils.get(name.roles, name="Trial Request"):
                 roleToAdd = discord.utils.get(ctx.guild.roles, name="Trial")
-                roleToRemove= discord.utils.get(ctx.guild.roles, name="Trial Request")
+                roleToRemove = discord.utils.get(ctx.guild.roles, name="Trial Request")
                 await ctx.response.defer(ephemeral=True)
                 await name.add_roles(roleToAdd)
                 await name.remove_roles(roleToRemove)
                 guildChat = discord.utils.get(ctx.guild.channels, name="guild-chat")
                 raidTalk = discord.utils.get(ctx.guild.channels, name="raid-talk")
-                raidAnnouncements = discord.utils.get(ctx.guild.channels, name="raid-announcements")
-                await channel.send(f"Welcome to the guild as a trial, {name.mention}. Please post in the {guildChat.mention} or {raidTalk.mention} channels with your character name, server and faction to get an invite once you're online. Information about our raid can be found in the {raidAnnouncements} channel, or elsewhere in this section.")
+                raidAnnouncements = discord.utils.get(
+                    ctx.guild.channels, name="raid-announcements"
+                )
+                await channel.send(
+                    f"Welcome to the guild as a trial, {name.mention}. Please post in the {guildChat.mention} or {raidTalk.mention} channels with your character name, server and faction to get an invite once you're online. Information about our raid can be found in the {raidAnnouncements} channel, or elsewhere in this section.",
+                    delete_after=172800,
+                )
                 await ctx.respond("Trial Approved.")
             else:
-                await ctx.respond("User does not have the trial request rank. Please try again, ensuring you selected the right user.", ephemeral=True)    
+                await ctx.respond(
+                    "User does not have the trial request rank. Please try again, ensuring you selected the right user.",
+                    ephemeral=True,
+                )
         else:
-            await ctx.respond("You do not have permission to do that.",ephemeral=True)        
+            await ctx.respond("You do not have permission to do that.", ephemeral=True)
     else:
-        await ctx.respond("This command can only be run in the trial-request channel.",ephemeral=True)      
-   
+        await ctx.respond(
+            "This command can only be run in the trial-request channel.", ephemeral=True
+        )
+
+
 ##Trial request message
 
+
 @bot.event
-async def on_member_update(before,after):
+async def on_member_update(before, after):
     if len(before.roles) < len(after.roles):
-        newRole = next(role for role in after.roles if role not in before.roles)
-        if newRole.name == "Trial Request":
-            channel = discord.utils.get(before.guild.channels, name="trial-request")
-            currentMember = discord.utils.get(after.guild.members, id = after.id)
-            await channel.send (f"Hi there {currentMember.mention}, I see you have requested the ""Trial Request"" role. Please submit a trial request by clicking at the top of this channel and an officer will be with you in due course. This notification will be automatically deleted after 48 hours. Alternatively, if this was a mistake, please return to the <id:customize> channel. ",delete_after=172800),
+        rolelist = (role for role in after.roles if role not in before.roles)
+        for role in rolelist:
+            if role.name == "Trial Request":
+                channel = discord.utils.get(before.guild.channels, name="trial-request")
+                currentMember = discord.utils.get(after.guild.members, id=after.id)
+                await channel.send(
+                    f"Hi there {currentMember.mention}, I see you have requested the "
+                    "Trial Request"
+                    " role. Please submit a trial request by clicking at the top of this channel and an officer will be with you in due course. This notification will be automatically deleted after 48 hours. Alternatively, if this was a mistake, please return to the <id:customize> channel. ",
+                    delete_after=86400,
+                ),
     if len(after.roles) < len(before.roles):
-        lostRole = next (role for role in before.roles if role not in after.roles)
-        if lostRole.name == "Trial Request":
-            channel = discord.utils.get(before.guild.channels, name="trial-request")
-            currentMember = discord.utils.get(after.guild.members, id = after.id)
-            async for message in channel.history(limit=None):
-                if (f"Hi there {currentMember.mention}, I see you have requested the ""Trial Request""") in message.content:
-                    await message.delete()
+        rolelist = (role for role in before.roles if role not in after.roles)
+        for role in rolelist:
+            if role.name == "Trial Request":
+                channel = discord.utils.get(before.guild.channels, name="trial-request")
+                currentMember = discord.utils.get(after.guild.members, id=after.id)
+                async for message in channel.history(limit=None):
+                    if (
+                        f"Hi there {currentMember.mention}, I see you have requested the "
+                        "Trial Request"
+                        ""
+                    ) in message.content:
+                        await message.delete()
 
 
-@bot.slash_command (name='resizechannel', guild_ids=[guildIDForServer])
+@bot.slash_command(name="resizechannel", guild_ids=[guildIDForServer])
 
 
-#provides the userbase with a slash command to resize a voice channel FROM WITHIN THE CHANNEL. Works for any channel using the "KEYS" designation for regular users, or any channel for officers.
-async def resizechannel (ctx, newlimit: int):
+# provides the userbase with a slash command to resize a voice channel FROM WITHIN THE CHANNEL. Works for any channel using the "KEYS" designation for regular users, or any channel for officers.
+async def resizechannel(ctx, newlimit: int):
     try:
         channel = ctx.author.voice.channel
     except:
-        await ctx.respond("You need to be in a voice channel to run this command.", ephemeral=True)
+        await ctx.respond(
+            "You need to be in a voice channel to run this command.", ephemeral=True
+        )
     else:
-        officerRole = discord.utils.get(ctx.guild.roles, name ="Officer")
+        officerRole = discord.utils.get(ctx.guild.roles, name="Officer")
         leadershipRole = discord.utils.get(ctx.guild.roles, name="Leadership")
         if (officerRole in ctx.author.roles) or (leadershipRole in ctx.author.roles):
-                await channel.edit(user_limit= newlimit)
-                await ctx.respond(f'Done! the "{channel.name}" channel has been set to allow a maximum of {newlimit} users.', ephemeral=True)
+            await channel.edit(user_limit=newlimit)
+            await ctx.respond(
+                f'Done! the "{channel.name}" channel has been set to allow a maximum of {newlimit} users.',
+                ephemeral=True,
+            )
         else:
-            if ("Keys" in channel.name):
-                await channel.edit(user_limit= newlimit)
-                await ctx.respond(f'Done! the "{channel.name}" channel has been set to allow a maximum of {newlimit} users.', ephemeral=True)
-            else: await ctx.respond("You do not have permission to change this channel. Please use one of the Keys channels.", ephemeral=True) 
-            
-            
+            if "Keys" in channel.name:
+                await channel.edit(user_limit=newlimit)
+                await ctx.respond(
+                    f'Done! the "{channel.name}" channel has been set to allow a maximum of {newlimit} users.',
+                    ephemeral=True,
+                )
+            else:
+                await ctx.respond(
+                    "You do not have permission to change this channel. Please use one of the Keys channels.",
+                    ephemeral=True,
+                )
+
+
 @bot.event
 async def on_voice_state_update(member, before, after):
     if before.channel is not None and before.channel.name != "Main Raid":
-        if len(before.channel.members)== 0:
+        if len(before.channel.members) == 0:
             await before.channel.edit(user_limit=0)
 
 
