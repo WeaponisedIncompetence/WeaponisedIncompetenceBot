@@ -149,7 +149,7 @@ async def professioncheck(
 
 @bot.slash_command(name="prompthowtosim")
 async def prompthowtosim(ctx):
-    ctx.channel.send(
+    await ctx.channel.send(
         "Need to know how to sim? Type /howtosim for detailed instructions."
     )
 
