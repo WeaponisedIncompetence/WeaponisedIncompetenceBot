@@ -5,6 +5,7 @@ from discord.ext import commands
 import discord.utils
 import pymongo
 import pymongo.mongo_client
+import json
 
 load_dotenv()
 intents = discord.Intents.default()
@@ -12,16 +13,16 @@ intents.message_content = True
 intents.members = True
 intents.presences = True
 myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
-
 bot = commands.Bot(command_prefix="/", intents=intents)
-
 mydb = myclient["Weaponised_Incompetence"]
 bottoken = os.environ["DISCORD_TOKEN"]
+guildID = ""
 
 
 @bot.event
 async def on_ready():
     print("successfully finished startup")
+
 
 
 ##Running a sim explanation
@@ -167,8 +168,6 @@ async def help(ctx):
 
 
 ## Approving trial automation
-
-
 @bot.slash_command(name="trialapproved")
 async def trialApproved(ctx, name: discord.Member):
     channel = discord.utils.get(ctx.guild.channels, name="trial-request")
@@ -184,11 +183,9 @@ async def trialApproved(ctx, name: discord.Member):
                 await name.remove_roles(roleToRemove)
                 guildChat = discord.utils.get(ctx.guild.channels, name="guild-chat")
                 raidTalk = discord.utils.get(ctx.guild.channels, name="raid-talk")
-                raidAnnouncements = discord.utils.get(
-                    ctx.guild.channels, name="raid-announcements"
-                )
-                await channel.send(
-                    f"Welcome to the guild as a trial, {name.mention}. Please post in the {guildChat.mention} or {raidTalk.mention} channels with your character name, server and faction to get an invite once you're online. Information about our raid can be found in the {raidAnnouncements} channel, or elsewhere in this section.",
+                raidAnnouncements = discord.utils.get(ctx.guild.channels, name="raid-announcements")
+                await raidTalk.send(
+                    f"Welcome to the guild as a trial, {name.mention}. Please reply here with your Character name, faction & server to get an invite once you're online. Information about our raid can be found in the {raidAnnouncements} channel, or elsewhere in this section.",
                     delete_after=172800,
                 )
                 await ctx.respond("Trial Approved.")
@@ -200,14 +197,11 @@ async def trialApproved(ctx, name: discord.Member):
         else:
             await ctx.respond("You do not have permission to do that.", ephemeral=True)
     else:
-        await ctx.respond(
-            "This command can only be run in the trial-request channel.", ephemeral=True
+        await ctx.respond("This command can only be run in the trial-request channel.", ephemeral=True
         )
 
 
 ##Trial request message
-
-
 @bot.event
 async def on_member_update(before, after):
     if len(before.roles) < len(after.roles):
@@ -270,6 +264,60 @@ async def resizechannel(ctx, newlimit: int):
                     ephemeral=True,
                 )
 
+
+@bot.event
+async def on_member_update(ctx,member):
+    role = discord.utils.get(ctx.guild.roles, name="Unverified")
+    await member.add_roles(role)
+    newMemberChannel = discord.utils.get(ctx.guild.channels, name="new-member")
+    newMember = discord.utils.get(ctx.guild.members, id=member.id)
+    welcomeMessage = await newMemberChannel.send(f'Welcome, {newMember.mention}. Please select one of the options below. Selecting one will grant the ones below it.:\n'
+                                ':crossed_swords: = Trial Request\n'
+                                ':heavy_plus_sign: = Mythic Plus\n'
+                                ':speech_balloon: = Social\n'
+                                )
+    await welcomeMessage.add_reaction("⚔️")
+    await welcomeMessage.add_reaction("➕")
+    await welcomeMessage.add_reaction("💬")
+ 
+
+#reaction role
+@bot.event
+async def on_raw_reaction_add(payload):
+    channel = bot.get_channel(payload.channel_id)
+    message = bot.get_message(1363845121644433461)
+    if channel.name == "new-member" and "Please select" in message.content:
+        socialRole = discord.utils.get(bot.get_guild.roles, name='Social')
+        trialRole = discord.utils.get(bot.guild.roles, name='Trial Request')
+        mythicPlusRole = discord.utils.get(payload.guild.roles, name='M+')
+        if str(payload.emoji) == '⚔️':
+            member = discord.utils.get(payload.user_ID)
+            await member.add_roles(socialRole, trialRole, mythicPlusRole)
+        if str(payload.emoji) == '💬':
+            member = discord.utils.get(payload.user_ID)
+            await member.add_roles(socialRole)
+        if str(payload.emoji) == '➕':
+            member = discord.utils.get(payload.user_ID)
+            await member.add_roles(mythicPlusRole, socialRole)   
+
+# async def on_raw_reaction_remove(payload):
+#     channel = bot.get_channel(payload.channelID)    
+#     if channel.name == "new-member":
+#         lastMessage = await channel.history.flatten()
+#         socialRole = discord.utils.get(bot.get_guild.roles, name='Social')
+#         trialRole = discord.utils.get(bot.get_guild.roles, name='Trial Request')
+#         mythicPlusRole = discord.utils.get(bot.get_guild.roles, name='M+')
+#         if payload.message_id == lastMessage[0].id:
+#             if str(payload.emoji) == '⚔️':
+#                 member = discord.utils.get(payload.user_ID)
+#                 await member.remove_roles(socialRole, trialRole, mythicPlusRole)
+#             if str(payload.emoji) == '💬':
+#                 member = discord.utils.get(payload.user_ID)
+#                 await member.remove_roles(socialRole)
+#             if str(payload.emoji) == '➕':
+#                 member = discord.utils.get(payload.user_ID)
+#                 await member.remove_roles(mythicPlusRole, socialRole)           
+        
 
 @bot.event
 async def on_voice_state_update(member, before, after):
