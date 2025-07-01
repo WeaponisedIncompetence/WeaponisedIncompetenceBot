@@ -2,25 +2,24 @@ import discord
 import os
 from dotenv import load_dotenv
 from discord.ext import commands
+from discord.ext import tasks
 import discord.utils
-import pymongo
-import pymongo.mongo_client
-import json
+from datetime import datetime, timedelta
 
 load_dotenv()
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 intents.presences = True
-myclient = pymongo.MongoClient(os.environ["MONGODB_URI"])
 bot = commands.Bot(command_prefix="/", intents=intents)
-mydb = myclient["Weaponised_Incompetence"]
 bottoken = os.environ["DISCORD_TOKEN"]
-guildID = ""
+
+
 
 
 @bot.event
 async def on_ready():
+    bot.load_extension('cogs.channelTidy')
     print("successfully finished startup")
 
 
@@ -213,7 +212,7 @@ async def on_member_update(before, after):
                 await channel.send(
                     f"Hi there {currentMember.mention}, I see you have requested the "
                     "Trial Request"
-                    " role. Please submit a trial request by clicking at the top of this channel and an officer will be with you in due course. This notification will be automatically deleted after 48 hours. Alternatively, if this was a mistake, please return to the <id:customize> channel. ",
+                    " role. Please submit a trial request by clicking at the top of this channel and an officer will be with you in due course. This notification will be automatically deleted after approximately 48 hours. Alternatively, if this was a mistake, please return to the <id:customize> channel. ",
                     delete_after=86400,
                 ),
     if len(after.roles) < len(before.roles):
@@ -229,7 +228,6 @@ async def on_member_update(before, after):
                         ""
                     ) in message.content:
                         await message.delete()
-
 
 @bot.slash_command(name="resizechannel")
 
@@ -264,60 +262,6 @@ async def resizechannel(ctx, newlimit: int):
                     ephemeral=True,
                 )
 
-
-# @bot.event
-# async def on_member_update(ctx,member):
-#     role = discord.utils.get(ctx.guild.roles, name="Unverified")
-#     await member.add_roles(role)
-#     newMemberChannel = discord.utils.get(ctx.guild.channels, name="new-member")
-#     newMember = discord.utils.get(ctx.guild.members, id=member.id)
-#     welcomeMessage = await newMemberChannel.send(f'Welcome, {newMember.mention}. Please select one of the options below. Selecting one will grant the ones below it.:\n'
-#                                 ':crossed_swords: = Trial Request\n'
-#                                 ':heavy_plus_sign: = Mythic Plus\n'
-#                                 ':speech_balloon: = Social\n'
-#                                 )
-#     await welcomeMessage.add_reaction("⚔️")
-#     await welcomeMessage.add_reaction("➕")
-#     await welcomeMessage.add_reaction("💬")
- 
-
-#reaction role
-# @bot.event
-# async def on_raw_reaction_add(payload):
-#     channel = bot.get_channel(payload.channel_id)
-#     message = bot.get_message(1363845121644433461)
-#     if channel.name == "new-member" and "Please select" in message.content:
-#         socialRole = discord.utils.get(bot.get_guild.roles, name='Social')
-#         trialRole = discord.utils.get(bot.guild.roles, name='Trial Request')
-#         mythicPlusRole = discord.utils.get(payload.guild.roles, name='M+')
-#         if str(payload.emoji) == '⚔️':
-#             member = discord.utils.get(payload.user_ID)
-#             await member.add_roles(socialRole, trialRole, mythicPlusRole)
-#         if str(payload.emoji) == '💬':
-#             member = discord.utils.get(payload.user_ID)
-#             await member.add_roles(socialRole)
-#         if str(payload.emoji) == '➕':
-#             member = discord.utils.get(payload.user_ID)
-#             await member.add_roles(mythicPlusRole, socialRole)   
-
-# async def on_raw_reaction_remove(payload):
-#     channel = bot.get_channel(payload.channelID)    
-#     if channel.name == "new-member":
-#         lastMessage = await channel.history.flatten()
-#         socialRole = discord.utils.get(bot.get_guild.roles, name='Social')
-#         trialRole = discord.utils.get(bot.get_guild.roles, name='Trial Request')
-#         mythicPlusRole = discord.utils.get(bot.get_guild.roles, name='M+')
-#         if payload.message_id == lastMessage[0].id:
-#             if str(payload.emoji) == '⚔️':
-#                 member = discord.utils.get(payload.user_ID)
-#                 await member.remove_roles(socialRole, trialRole, mythicPlusRole)
-#             if str(payload.emoji) == '💬':
-#                 member = discord.utils.get(payload.user_ID)
-#                 await member.remove_roles(socialRole)
-#             if str(payload.emoji) == '➕':
-#                 member = discord.utils.get(payload.user_ID)
-#                 await member.remove_roles(mythicPlusRole, socialRole)           
-        
 
 @bot.event
 async def on_voice_state_update(member, before, after):
