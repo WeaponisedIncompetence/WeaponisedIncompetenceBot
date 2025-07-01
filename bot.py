@@ -265,40 +265,40 @@ async def resizechannel(ctx, newlimit: int):
                 )
 
 
-@bot.event
-async def on_member_update(ctx,member):
-    role = discord.utils.get(ctx.guild.roles, name="Unverified")
-    await member.add_roles(role)
-    newMemberChannel = discord.utils.get(ctx.guild.channels, name="new-member")
-    newMember = discord.utils.get(ctx.guild.members, id=member.id)
-    welcomeMessage = await newMemberChannel.send(f'Welcome, {newMember.mention}. Please select one of the options below. Selecting one will grant the ones below it.:\n'
-                                ':crossed_swords: = Trial Request\n'
-                                ':heavy_plus_sign: = Mythic Plus\n'
-                                ':speech_balloon: = Social\n'
-                                )
-    await welcomeMessage.add_reaction("⚔️")
-    await welcomeMessage.add_reaction("➕")
-    await welcomeMessage.add_reaction("💬")
+# @bot.event
+# async def on_member_update(ctx,member):
+#     role = discord.utils.get(ctx.guild.roles, name="Unverified")
+#     await member.add_roles(role)
+#     newMemberChannel = discord.utils.get(ctx.guild.channels, name="new-member")
+#     newMember = discord.utils.get(ctx.guild.members, id=member.id)
+#     welcomeMessage = await newMemberChannel.send(f'Welcome, {newMember.mention}. Please select one of the options below. Selecting one will grant the ones below it.:\n'
+#                                 ':crossed_swords: = Trial Request\n'
+#                                 ':heavy_plus_sign: = Mythic Plus\n'
+#                                 ':speech_balloon: = Social\n'
+#                                 )
+#     await welcomeMessage.add_reaction("⚔️")
+#     await welcomeMessage.add_reaction("➕")
+#     await welcomeMessage.add_reaction("💬")
  
 
 #reaction role
-@bot.event
-async def on_raw_reaction_add(payload):
-    channel = bot.get_channel(payload.channel_id)
-    message = bot.get_message(1363845121644433461)
-    if channel.name == "new-member" and "Please select" in message.content:
-        socialRole = discord.utils.get(bot.get_guild.roles, name='Social')
-        trialRole = discord.utils.get(bot.guild.roles, name='Trial Request')
-        mythicPlusRole = discord.utils.get(payload.guild.roles, name='M+')
-        if str(payload.emoji) == '⚔️':
-            member = discord.utils.get(payload.user_ID)
-            await member.add_roles(socialRole, trialRole, mythicPlusRole)
-        if str(payload.emoji) == '💬':
-            member = discord.utils.get(payload.user_ID)
-            await member.add_roles(socialRole)
-        if str(payload.emoji) == '➕':
-            member = discord.utils.get(payload.user_ID)
-            await member.add_roles(mythicPlusRole, socialRole)   
+# @bot.event
+# async def on_raw_reaction_add(payload):
+#     channel = bot.get_channel(payload.channel_id)
+#     message = bot.get_message(1363845121644433461)
+#     if channel.name == "new-member" and "Please select" in message.content:
+#         socialRole = discord.utils.get(bot.get_guild.roles, name='Social')
+#         trialRole = discord.utils.get(bot.guild.roles, name='Trial Request')
+#         mythicPlusRole = discord.utils.get(payload.guild.roles, name='M+')
+#         if str(payload.emoji) == '⚔️':
+#             member = discord.utils.get(payload.user_ID)
+#             await member.add_roles(socialRole, trialRole, mythicPlusRole)
+#         if str(payload.emoji) == '💬':
+#             member = discord.utils.get(payload.user_ID)
+#             await member.add_roles(socialRole)
+#         if str(payload.emoji) == '➕':
+#             member = discord.utils.get(payload.user_ID)
+#             await member.add_roles(mythicPlusRole, socialRole)   
 
 # async def on_raw_reaction_remove(payload):
 #     channel = bot.get_channel(payload.channelID)    
