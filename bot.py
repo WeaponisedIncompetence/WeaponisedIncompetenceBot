@@ -85,7 +85,7 @@ async def howtosim(ctx):
 ##Chat Purge
 
 
-@bot.slash_command(
+@bot.command(
     name="clearchat",
     description="Purges chat. Must have the Administrator role to action",
 )
@@ -146,14 +146,14 @@ async def professioncheck(
 ## Sim reminder
 
 
-@bot.slash_command(name="prompthowtosim")
+@bot.command(name="prompthowtosim")
 async def prompthowtosim(ctx):
     await ctx.channel.send(
         "Need to know how to sim? Type /howtosim for detailed instructions."
     )
 
 
-@bot.slash_command(name="commands")
+@bot.command(name="commands")
 async def help(ctx):
     sname = ctx.guild.name
     embed = discord.Embed(title=sname, url="", description="Help")
@@ -166,7 +166,7 @@ async def help(ctx):
 
 
 ## Approving trial automation
-@bot.slash_command(name="trialapproved")
+@bot.command(name="trialapproved")
 async def trialApproved(ctx, name: discord.Member):
     channel = discord.utils.get(ctx.guild.channels, name="trial-request")
     if ctx.channel == channel:
@@ -228,7 +228,7 @@ async def on_member_update(before, after):
                     ) in message.content:
                         await message.delete()
 
-@bot.slash_command(name="resizechannel")
+@bot.command(name="resizechannel")
 
 
 # provides the userbase with a slash command to resize a voice channel FROM WITHIN THE CHANNEL. Works for any channel using the "KEYS" designation for regular users, or any channel for officers.
