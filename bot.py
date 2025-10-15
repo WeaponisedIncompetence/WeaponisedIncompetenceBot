@@ -26,7 +26,7 @@ async def on_ready():
 
 ##Running a sim explanation
 
-@bot.command(
+@bot.slash_command(
     name="howtosim",
     description="Help me run and import a sim into WoWAudit",
 )
@@ -85,7 +85,7 @@ async def howtosim(ctx):
 ##Chat Purge
 
 
-@bot.command(
+@bot.slash_command(
     name="clearchat",
     description="Purges chat. Must have the Administrator role to action",
 )
@@ -110,7 +110,7 @@ async def clearchat(ctx, number: int):
 ##ProfessionCheck
 
 
-@bot.command(
+@bot.slash_command(
     name="professioncheck",
     description="Returns a list of members with the given profession role",
 )
@@ -146,14 +146,14 @@ async def professioncheck(
 ## Sim reminder
 
 
-@bot.command(name="prompthowtosim")
+@bot.slash_command(name="prompthowtosim")
 async def prompthowtosim(ctx):
     await ctx.channel.send(
         "Need to know how to sim? Type /howtosim for detailed instructions."
     )
 
 
-@bot.command(name="commands")
+@bot.slash_command(name="commands")
 async def help(ctx):
     sname = ctx.guild.name
     embed = discord.Embed(title=sname, url="", description="Help")
@@ -166,7 +166,7 @@ async def help(ctx):
 
 
 ## Approving trial automation
-@bot.command(name="trialapproved")
+@bot.slash_command(name="trialapproved")
 async def trialApproved(ctx, name: discord.Member):
     channel = discord.utils.get(ctx.guild.channels, name="trial-request")
     if ctx.channel == channel:
@@ -228,7 +228,7 @@ async def on_member_update(before, after):
                     ) in message.content:
                         await message.delete()
 
-@bot.command(name="resizechannel")
+@bot.slash_command(name="resizechannel")
 
 
 # provides the userbase with a slash command to resize a voice channel FROM WITHIN THE CHANNEL. Works for any channel using the "KEYS" designation for regular users, or any channel for officers.
