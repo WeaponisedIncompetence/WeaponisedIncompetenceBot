@@ -110,7 +110,7 @@ async def clearchat(ctx, number: int):
 ##ProfessionCheck
 
 
-@bot.slash_command(
+@bot.command(
     name="professioncheck",
     description="Returns a list of members with the given profession role",
 )
