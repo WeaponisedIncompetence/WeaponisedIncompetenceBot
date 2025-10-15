@@ -26,8 +26,7 @@ async def on_ready():
 
 ##Running a sim explanation
 
-
-@bot.slash_command(
+@bot.command(
     name="howtosim",
     description="Help me run and import a sim into WoWAudit",
 )
